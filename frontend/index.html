@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Formulário Simples</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Início do Cabeçalho -->
+  <header class="site-header">
+    <div class="container">
+      <h2 class="logo">🚀 MeuSite</h2>
+      <nav class="nav">
+        <a href="#">Início</a>
+        <a href="#">Sobre</a>
+        <a href="#">Contato</a>
+      </nav>
+    </div>
+  </header>
+  <!-- Fim do Cabeçalho -->
+
+  <h1>Cadastro Rápido</h1>
+  <div class="card">
+    <form id="form">
+      <div class="row">
+        <div>
+          <label>Nome</label>
+          <input name="nome" required placeholder="Seu nome" />
+        </div>
+        <div>
+          <label>Email</label>
+          <input name="email" type="email" required placeholder="voce@exemplo.com" />
+        </div>
+      </div>
+      <label>Mensagem</label>
+      <textarea name="mensagem" rows="4" placeholder="Escreva algo..."></textarea>
+
+      <details>
+        <summary>Opções (dev)</summary>
+        <label>API Key (dev) — não use chave real em produção</label>
+        <input id="apiKey" placeholder="YOUR_DEV_API_KEY" />
+        <label>URL da API</label>
+        <input id="apiUrl" value="http://localhost:8000/submit" />
+      </details>
+
+      <button type="submit">Enviar</button>
+      <div id="status"></div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('form');
+    const statusEl = document.getElementById('status');
+    const apiKeyEl = document.getElementById('apiKey');
+    const apiUrlEl = document.getElementById('apiUrl');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.textContent = 'Enviando...';
+      statusEl.className = '';
+
+      const data = Object.fromEntries(new FormData(form));
+
+      try {
+        const res = await fetch(apiUrlEl.value, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': apiKeyEl.value || 'YOUR_DEV_API_KEY'
+          },
+          body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.detail || res.statusText);
+        statusEl.textContent = '✔️ Enviado com sucesso! id=' + json.id;
+        statusEl.className = 'ok';
+        form.reset();
+      } catch (err) {
+        statusEl.textContent = 'Erro: ' + err.message;
+        statusEl.className = 'err';
+      }
+    });
+  </script>
+</body>
+</html>
