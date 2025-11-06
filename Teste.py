@@ -9,3 +9,5 @@ precos = input("Digite os preços separados por vírgula: ").split(",")
  
 for produto, preco in zip(produtos, precos): 
     print(f"{produto.strip()}: {preco.strip()}") 
+
+print("Teste para commits e atualizações do git/github")
